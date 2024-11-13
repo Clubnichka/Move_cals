@@ -157,67 +157,68 @@ file.close()
 
 
 # mango
-from time import sleep
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium import webdriver
+# from time import sleep
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.keys import Keys
+# from selenium import webdriver
 
-sleep(15)
+# sleep(15)
 
-options = webdriver.FirefoxOptions()
-options.add_argument('--ignore-ssl-errors=yes')
-options.add_argument('--ignore-certificate-errors')
-browser = webdriver.Remote(command_executor='http://selenium-firefox:4444/wd/hub', options=options)
+# #options = webdriver.FirefoxOptions()
+# options = webdriver.ChromeOptions()
+# options.add_argument('--ignore-ssl-errors=yes')
+# options.add_argument('--ignore-certificate-errors')
+# browser = webdriver.Chrome(options=options)
 
-#открываем страницу манго
-browser.get('https://lk.mango-office.ru/')
-sleep(10)
-assert 'Личный кабинет' in browser.title
+# #открываем страницу манго
+# browser.get('https://lk.mango-office.ru/')
+# sleep(10)
+# assert 'Личный кабинет' in browser.title
 
-#вводим логин и пароль
-elem = browser.find_element(By.NAME, 'login')
-elem.send_keys(mango_login)
-elem = browser.find_element(By.NAME, 'password')
-elem.send_keys(mango_pass + Keys.RETURN)
-sleep(15)
+# #вводим логин и пароль
+# elem = browser.find_element(By.NAME, 'login')
+# elem.send_keys(mango_login)
+# elem = browser.find_element(By.NAME, 'password')
+# elem.send_keys(mango_pass + Keys.RETURN)
+# sleep(15)
 
-#проверяем, есть ли плашка с сообщением о схеме работы в праздничные дни
-#elem = browser.find_element(By.XPATH, '/html/body/div[14]/div/div/div[3]/button[2]')
-#if elem is not None:
-#    elem.click()
-#    sleep(3)
+# #проверяем, есть ли плашка с сообщением о схеме работы в праздничные дни
+# #elem = browser.find_element(By.XPATH, '/html/body/div[14]/div/div/div[3]/button[2]')
+# #if elem is not None:
+# #    elem.click()
+# #    sleep(3)
 
-#переходим на страницу с сотрудниками группы супорта
-browser.get('https://lk.mango-office.ru/300007626/300011669/members/grouped/autoopen/228158')
-sleep(15)
+# #переходим на страницу с сотрудниками группы супорта
+# browser.get('https://lk.mango-office.ru/300007626/300011669/members/grouped/autoopen/228158')
+# sleep(15)
 
-#переходим на вкладку с сотрудниками
-elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[1]/div[2]')
-elem.click()
-sleep(10)
+# #переходим на вкладку с сотрудниками
+# elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[1]/div[2]')
+# elem.click()
+# sleep(10)
 
-#меняем приоритет 1 на 2
-elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/div/input[@value=1]')
-elem.click()
-elem.clear()
-elem.send_keys('2')
-sleep(3)
+# #меняем приоритет 1 на 2
+# elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/div/input[@value=1]')
+# elem.click()
+# elem.clear()
+# elem.send_keys('2')
+# sleep(3)
 
-#ищем сотрудника из вик и меняем ему приоритет на 1
-#elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='{current_person}']/div[1]/div/div/input")
-#elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span='{current_person}']]/div[1]/div/div/input")
-#elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span[text()=`{current_person}`]]]/div[1]/div/div/input")
-elem = browser.find_element(By.XPATH, "/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/input")
-elem.click()
-elem.clear()
-elem.send_keys('1')
+# #ищем сотрудника из вик и меняем ему приоритет на 1
+# #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='{current_person}']/div[1]/div/div/input")
+# #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span='{current_person}']]/div[1]/div/div/input")
+# #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span[text()=`{current_person}`]]]/div[1]/div/div/input")
+# elem = browser.find_element(By.XPATH, "/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/input")
+# elem.click()
+# elem.clear()
+# elem.send_keys('1')
 
-#нажимаем кнопку Сохранить
-elem = browser.find_element(By.XPATH, "/html/body/div[5]/div/div/div/div[3]/div[1]/button")
-elem.click()
-sleep(3)
+# #нажимаем кнопку Сохранить
+# elem = browser.find_element(By.XPATH, "/html/body/div[5]/div/div/div/div[3]/div[1]/button")
+# elem.click()
+# sleep(3)
 
-browser.quit()
+# browser.quit()
 
 #mtm
 import mattermost
@@ -225,19 +226,19 @@ import mattermost
 #заходим в MTM
 mm = mattermost.MMApi("https://mtm.wsoft.ru/api")
 #support-informer
-mm.login(bearer=mtm_bot_token)
+mm.login("alebedev@wsoft.ru","Koro1iShut")
 
 #получаем id пользователя и команды
 # user_id = mm.get_user().get('id')
 # team_id = next(mm.get_teams()).get('id')
 
 #ищем id канала, в который будем писать
-channel_id = mtm_channel
+channel_id = "1yt5wkhcgjb6pycue5o4jzxgny"
 # channel_id = ''
 # for channel in mm.get_channels_for_user(user_id, team_id):
 #     if channel.get("display_name") == "Support tea":
 #         channel_id = channel.get("id")
 
 #пишем сообщение в канал
-mm.create_post(channel_id, 'Сегодня за алармами следит '+current_person)
+mm.create_post(channel_id, 'Сегодня за алармами следит @'+current_person)
 
