@@ -69,10 +69,11 @@ if response.status_code == 200:
                 
             for row in rows[1:]:  # Пропускаем заголовок таблицы
                 cols = row.find_all('td')
-                if len(cols) == 2:  # Убедитесь, что есть два столбца
+                if len(cols) == 3:  # Убедитесь, что есть три столбца
                     number = cols[0].get_text(strip=True)
-                    name = cols[1].get_text(strip=True)
-                    data_array.append({'номер': number, 'имя': name})
+                    login = cols[1].get_text(strip=True)
+                    name = cols[2].get_text(strip=True)
+                    data_array.append({'номер': number, 'имя': name, 'логин':login})
                 
             print(data_array)
         else:
@@ -88,6 +89,7 @@ current_person_id=int(file.read())
 for line in data_array:
     if int(line['номер'])==current_person_id:
         current_person=line['имя']
+        current_person_login=line['логин']
         break
 #current_person=data_array[current_person_id]
 print(current_person)
@@ -197,30 +199,38 @@ sleep(15)
 elem = browser.find_element(By.XPATH, '//*[@id="app-modal"]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[1]/div[2]/button[2]/span')
 elem.click()
 sleep(10)
-
-#меняем приоритет 1 на 2
-#elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/div/input[@value=1]')
-elem = browser.find_element(By.XPATH, '//*[@id="app-modal"]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div[1]/div/div/div/div/input[@value=1]')
-elem.click()
-elem.clear()
-elem.send_keys('2')
-sleep(3)
-
+try:
+    #меняем приоритет 1 на 2
+    #elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/div/input[@value=1]')
+    elem = browser.find_element(By.XPATH, '//*[@id="app-modal"]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div[1]/div/div/div/div/input')
+    elem.click()
+    elem.clear()
+    elem.send_keys('2')
+    sleep(3)
+except:
+    print("Приоритет не изменён")
 #ищем сотрудника из вик и меняем ему приоритет на 1
 #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='{current_person}']/div[1]/div/div/input")
 #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span='{current_person}']]/div[1]/div/div/input")
 #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span[text()=`{current_person}`]]]/div[1]/div/div/input")
 #elem = browser.find_element(By.XPATH, "/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/input")
-elem = browser.find_element(By.XPATH, f"//*[@id='app-modal']/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/input")
-elem.click()
-elem.clear()
-elem.send_keys('1')
-
+try:
+    elem = browser.find_element(By.XPATH, f"//*[@id='app-modal']/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/div/div/input")
+    elem.click()
+    elem.clear()
+    elem.send_keys('1')
+except:
+    print('Дежурство не изменено')
 #нажимаем кнопку Сохранить
-elem = browser.find_element(By.XPATH, "//*[@id='app-modal']/div/div/div[2]/div/div[2]/div/div[3]/div/div[1]/button")
-elem.click()
-sleep(3)
 
+try:
+    elem = browser.find_element(By.XPATH, "//*[@id='app-modal']/div/div/div[2]/div/div[2]/div/div[3]/div/div[1]/button")
+    elem.click()
+    sleep(3)
+except:
+    print('Данные не сохранены')
+
+input()
 browser.quit()
 
 #mtm
@@ -243,5 +253,5 @@ channel_id = "1yt5wkhcgjb6pycue5o4jzxgny"
 #         channel_id = channel.get("id")
 
 #пишем сообщение в канал
-mm.create_post(channel_id, 'Сегодня за алармами следит @'+current_person)
+mm.create_post(channel_id, 'Сегодня за алармами следит @'+current_person_login)
 
