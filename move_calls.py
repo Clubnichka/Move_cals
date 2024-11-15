@@ -61,31 +61,50 @@ if response.status_code == 200:
         # Найдите заголовок "График"
        
             # Найдите родительский элемент заголовка (например, div или section)
-        table = soup.find('table')  # Предполагается, что таблица идет сразу после заголовка
-            
-        if table:
-            data_array = []
-            rows = table.find_all('tr')
-                
-            for row in rows[1:]:  # Пропускаем заголовок таблицы
-                cols = row.find_all('td')
-                if len(cols) == 3:  # Убедитесь, что есть три столбца
-                    number = cols[0].get_text(strip=True)
-                    login = cols[1].get_text(strip=True)
-                    name = cols[2].get_text(strip=True)
-                    data_array.append({'номер': number, 'имя': name, 'логин':login})
-                
-            print(data_array)
-        else:
-            print("Таблица не найдена.")
+        tables = soup.find_all('table')  # Предполагается, что таблица идет сразу после заголовка
 
+        for index,table in enumerate(tables):
+            print(index)
+            if index==0:
+                data_array = []
+                rows = table.find_all('tr')
+                    
+                for row in rows[1:]:  # Пропускаем заголовок таблицы
+                    cols = row.find_all('td')
+                    if len(cols) == 3:  # Убедитесь, что есть три столбца
+                        number = cols[0].get_text(strip=True)
+                        login = cols[1].get_text(strip=True)
+                        name = cols[2].get_text(strip=True)
+                        data_array.append({'номер': number, 'имя': name, 'логин':login})
+                    
+                print(data_array)
+            elif index!=1:
+                print("Таблица не найдена.")
+
+            if index==1:
+                today_day = int(datetime.now().strftime("%d"))
+                rows=table.find_all('tr')
+                for row in rows:
+                    # Получаем ячейки в строке
+                    cells = row.find_all(['td', 'th'])  # 'td' для данных, 'th' для заголовков
+                    cell_data = [cell.get_text(strip=True) for cell in cells]
+                    print (cell_data)
+                    for num in cell_data:
+                        if num!='':
+                            if int(num.split(':')[0])==today_day:
+                                current_person_id=int(num.split(':')[1])
+                                print(current_person_id)
+            elif index!=0:
+                print('Второй таблицы не найдено')
     else:
         print("Ключ 'body' отсутствует в ответе.")
 else:
     print(f"Ошибка при получении страницы: {response.status_code} - {response.text}")
 
-file=open("current_person.txt", 'r+')
-current_person_id=int(file.read())
+
+#Считываем таблицу с графиком
+#file=open("current_person.txt", 'r+')
+#current_person_id=int(file.read())
 for line in data_array:
     if int(line['номер'])==current_person_id:
         current_person=line['имя']
@@ -93,12 +112,12 @@ for line in data_array:
         break
 #current_person=data_array[current_person_id]
 print(current_person)
-file.close()
-if current_person_id==3:
-    current_person_id=0
-file=open("current_person.txt", 'w')
-file.write(f"{current_person_id+1}")
-file.close()
+# file.close()
+# if current_person_id==3:
+#     current_person_id=0
+# file=open("current_person.txt", 'w')
+# file.write(f"{current_person_id+1}")
+# file.close()
 #получаем содержимое статьи
 #text = c.get_page_by_title(space_id, "График смотрящих за алармами в нерабочее время", expand="body.storage").get('body').get("storage").get("value")
 
