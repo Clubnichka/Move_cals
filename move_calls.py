@@ -101,6 +101,161 @@ if response.status_code == 200:
 else:
     print(f"Ошибка при получении страницы: {response.status_code} - {response.text}")
 
+from time import sleep
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+
+# response = requests.get(
+#     f'https://wiki.wsoft.ru/calendar/spacecalendar.action?spaceKey=WSOFTWIKI',
+#     auth=('alebedev', '3gA7YpGA')
+#  )
+
+# content=response.content
+# soup = BeautifulSoup(content, 'html.parser')
+# items = soup.find_all('li')
+# if items:
+    
+#     for li in items:
+#         print(li)
+# else:
+#     print('Неа')
+
+import requests
+from datetime import datetime, timedelta
+
+# Конфигурация
+CONFLUENCE_URL = 'https://wiki.wsoft.ru/display/WSOFTWIKI/calendars'  # URL вашего Confluence
+API_ENDPOINT = '/rest/calendar-services/1.0/calendar/events'  # Эндпоинт для получения событий
+USERNAME = 'alebedev'  # Ваше имя пользователя
+API_TOKEN = '3gA7YpGA'  # Ваш API токен
+
+# Получаем сегодняшнюю дату
+today = datetime.now()
+start_of_day = today.replace(hour=0, minute=0, second=0, microsecond=0)
+end_of_day = today.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+# Форматируем даты в нужный формат (например, ISO 8601)
+start_date = start_of_day.isoformat() + 'Z'
+end_date = end_of_day.isoformat() + 'Z'
+
+# Выполняем GET-запрос к API Confluence для получения событий за сегодняшний день
+response = requests.get(
+    f"{CONFLUENCE_URL}{API_ENDPOINT}",
+    auth=(USERNAME, API_TOKEN),
+    params={
+        'startDate': start_date,
+        'endDate': end_date
+    }
+)
+##
+##
+
+import confluence_calendar_api
+
+username = USERNAME
+password =  API_TOKEN
+confluence_url = CONFLUENCE_URL
+
+client = confluence_calendar_api.Api(url=confluence_url, username=username, password=password)
+
+calendar = client.get_calendars(sub_calendar_id=12341)
+print(calendar)
+
+##
+##
+
+# Проверяем успешность запроса
+if response.status_code == 200:
+    events = response.json().get('events', [])
+    
+    # Фильтруем события по названию
+    vacation_events = [event for event in events if 'отпуск' in event.get('summary', '').lower()]
+    
+    # Выводим найденные события
+    print("События с названием 'отпуск':")
+    for event in vacation_events:
+        print(event['summary'], "-", event['start'], "до", event['end'])
+else:
+    print(f"Ошибка при получении событий: {response.status_code}")
+# options = webdriver.ChromeOptions()
+# options.add_argument('--ignore-ssl-errors=yes')
+# options.add_argument('--ignore-certificate-errors')
+# browser = webdriver.Chrome(options=options)
+
+# #открываем страницу confluence
+# browser.get('https://crowd.wsoft.ru/crowd/console/login.action#/')
+# sleep(10)
+
+# #вводим логин и пароль
+# elem = browser.find_element(By.NAME, 'login')
+# elem.send_keys("alebedev")
+# elem = browser.find_element(By.NAME, 'password')
+# elem.send_keys("3gA7YpGA" + Keys.RETURN)
+# sleep(15)
+
+# #проверяем, есть ли плашка с сообщением о схеме работы в праздничные дни
+# #elem = browser.find_element(By.XPATH, '/html/body/div[14]/div/div/div[3]/button[2]')
+# #if elem is not None:
+# #    elem.click()
+# #    sleep(3)
+
+# #переходим на страницу с сотрудниками группы супорта
+# browser.get('https://wiki.wsoft.ru/calendar/spacecalendar.action?spaceKey=WSOFTWIKI')
+# sleep(15)
+
+# elem = browser.find_element(By.XPATH, '//*[@id="app-modal"]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[1]/div[2]/button[2]/span')
+# elem.click()
+# sleep(10)
+# try:
+#     #меняем приоритет 1 на 2
+#     #elem = browser.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/div/input[@value=1]')
+#     elem = browser.find_element(By.XPATH, '//*[@id="app-modal"]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div[1]/div/div/div/div/input')
+#     elem.click()
+#     elem.clear()
+#     elem.send_keys('2')
+#     sleep(3)
+# except:
+#     print("Приоритет не изменён")
+# #ищем сотрудника из вик и меняем ему приоритет на 1
+# #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='{current_person}']/div[1]/div/div/input")
+# #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span='{current_person}']]/div[1]/div/div/input")
+# #elem = browser.find_element(By.XPATH, f"/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2][span[text()=`{current_person}`]]]/div[1]/div/div/input")
+# #elem = browser.find_element(By.XPATH, "/html/body/div[5]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/input")
+# try:
+#     elem = browser.find_element(By.XPATH, f"//*[@id='app-modal']/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div[2]/div/div[div[2]/span='" + current_person + "']/div[1]/div/div/div/div/input")
+#     elem.click()
+#     elem.clear()
+#     elem.send_keys('1')
+# except:
+#     print('Дежурство не изменено')
+# #нажимаем кнопку Сохранить
+
+# try:
+#     elem = browser.find_element(By.XPATH, "//*[@id='app-modal']/div/div/div[2]/div/div[2]/div/div[3]/div/div[1]/button")
+#     elem.click()
+#     sleep(3)
+# except:
+#     print('Данные не сохранены')
+
+# input()
+# browser.quit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Считываем таблицу с графиком
 #file=open("current_person.txt", 'r+')
@@ -178,10 +333,7 @@ print(current_person)
 
 
 #mango
-from time import sleep
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium import webdriver
+
 
 sleep(15)
 
